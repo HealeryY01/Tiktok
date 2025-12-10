@@ -59,3 +59,24 @@
   bottom: 0;
   z-index: -1;
 }
+/* Active Menu States */
+.tp-header-menu > nav > ul > li.active > a,
+.main-menu > li.active > a {
+  color: #007bff !important;
+  font-weight: 600 !important;
+  
+  &::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 30px !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 2px !important;
+    background-color: #007bff !important;
+  }
+}
+
+.tp-submenu li.active > a {
+  color: #007bff !important;
+  background-color: rgba(0, 123, 255, 0.1) !important;
+}

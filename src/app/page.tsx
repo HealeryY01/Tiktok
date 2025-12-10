@@ -1,13 +1,14 @@
-import CryptoCurrencyMain from "@/pages/homes/home/cryptocurrency/CryptoCurrencyMain";
+// src/app/page.tsx - TRANG CHỦ
+import HomeMain from "@/pages/home/CryptoCurrencyMain"; // Đổi tên cho dễ hiểu
 import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Agntix - Cryptocurrency Light",
+  title: "Agntix - Trang chủ",
 };
 
-const page = () => {
-  return <CryptoCurrencyMain />;
+const HomePage = () => {
+  return <HomeMain />;
 };
 
-export default page;
+export default HomePage;

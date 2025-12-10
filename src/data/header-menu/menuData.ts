@@ -1,116 +1,85 @@
 import { MenuItem } from "@/types/menu-d-t";
 
-const headerMenuData:MenuItem[] = [
+const headerMenuData: MenuItem[] = [
   {
     id: 1,
-    hasDropdown: true,
-    active: true,
-    megaMenu: true,
-    children: true,
     title: "Trang chủ",
-    pluseIncon: true,
-    link: "#",
+    link: "/",
+    hasDropdown: false,
+    submenus: []
   },
   {
     id: 2,
-    active: true,
-    children: true,
     title: "Về chúng tôi",
-    pluseIncon: true,
-    link: "#",
-    smallMenu: true,
+    link: "/about-us",
+    hasDropdown: false,
+    submenus: []
   },
   {
     id: 3,
-    hasDropdown: true,
-    active: true,
-    children: true,
-    title: "Tài liệu ",
-    pluseIncon: true,
-    mediumMenu: true,
-    link: "#",
+    title: "Tài liệu",
+    link: "https://tailieu.tikcrm.net/",
+   hasDropdown: false,
+    submenus: []
+    
   },
   {
     id: 4,
-    hasDropdown: true,
-    active: true,
-    megaMenu: false,
-    children: true,
     title: "Blog",
-    pluseIncon: true,
-    link: "#",
+    link: "/blog",
+    hasDropdown: true,
+    submenus: [
+      {
+        title: "Bài viết mới nhất",
+        link: "/blog/latest",
+      },
+      {
+        title: "Danh mục",
+        link: "/blog/categories",
+      },
+      {
+        title: "Tags",
+        link: "/blog/tags",
+      }
+    ]
   },
   {
     id: 5,
-    hasDropdown: true,
-    active: true,
-    megaMenu: false,
-    children: true,
     title: "Shop",
-    pluseIncon: true,
-    link: "/shop-modern-light",
+    link: "/shop",
+    hasDropdown: true,
     submenus: [
       {
-        title: "Shop Modern",
-        link: "/shop-modern",
-        pluseIncon: false
+        title: "Sản phẩm mới",
+        link: "/shop/new",
       },
       {
-        title: "Shop With Slider",
-        link: "/shop-with-slider-light",
-        pluseIncon: false
+        title: "Sản phẩm bán chạy",
+        link: "/shop/best-sellers",
       },
       {
-        title: "Shop Page",
+        title: "Khuyến mãi",
+        link: "/shop/promotions",
+      },
+      {
+        title: "Tài khoản",
         link: "#",
-        pluseIncon: true,
         submenus: [
-          { title: "Shop Page", link: "/shop" },
-          { title: "Shop Details", link: "/shop-details" },
-        ]
-      },
-      {
-        title: "My Account",
-        link: "#",
-        pluseIncon: true,
-        submenus: [
-          { title: "My Account", link: "/my-account" },
-          { title: "Cart", link: "/cart" },
-          { title: "Checkout", link: "/checkout" },
-          { title: "Wishlist", link: "/wishlist" },
-          { title: "LogIn", link: "/login" },
-          { title: "Register", link: "/register" }
+          { title: "Tài khoản của tôi", link: "/my-account" },
+          { title: "Giỏ hàng", link: "/cart" },
+          { title: "Thanh toán", link: "/checkout" },
+          { title: "Yêu thích", link: "/wishlist" },
         ]
       }
     ]
   },
   {
     id: 6,
-    hasDropdown: true,
-    active: true,
-    megaMenu: false,
-    children: true,
-    title: "Contact",
-    pluseIncon: true,
+    title: "Liên hệ",
     link: "/contact",
-    submenus: [
-      {
-        title: "Contact Me",
-        link: "/contact-me-light",
-        pluseIncon: false
-      },
-      {
-        title: "Contact Us",
-        link: "/contact-us-light",
-        pluseIncon: false
-      },
-      {
-        title: "Get In Touch",
-        link: "/contact",
-        pluseIncon: false
-      },
-    ]
+    hasDropdown: false,
+    submenus: []
   }
 ];
-export default headerMenuData;
 
+export default headerMenuData;

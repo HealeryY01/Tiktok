@@ -1,188 +1,253 @@
 "use client";
 import headerMenuData from "@/data/header-menu/menuData";
-import ThemeLink from "@/components/ThemeLink";
-import { Submenu } from "@/types/menu-d-t";
+import { MenuItem, Submenu } from "@/types/menu-d-t";
 import { useState } from "react";
-import Image from "next/image";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 export default function NavMenus() {
-  const [hoveredMenu, setHoveredMenu] = useState<number | null>(
-    headerMenuData[0]?.id || null
-  );
+  const [hoveredMenu, setHoveredMenu] = useState<number | null>(null);
+  const [expandedMainMenus, setExpandedMainMenus] = useState<number[]>([]);
+  const [expandedSubMenus, setExpandedSubMenus] = useState<string[]>([]);
+  const pathname = usePathname();
 
-  // Renders nested submenus
-  const renderSubmenu = (submenus: Submenu[] = []) => {
+  // Toggle main menu
+  const toggleMainMenu = (menuId: number) => {
+    setExpandedMainMenus((prev) =>
+      prev.includes(menuId)
+        ? prev.filter((id) => id !== menuId)
+        : [...prev, menuId]
+    );
+  };
+
+  // Toggle submenu
+  const toggleSubMenu = (menuKey: string) => {
+    setExpandedSubMenus((prev) =>
+      prev.includes(menuKey)
+        ? prev.filter((key) => key !== menuKey)
+        : [...prev, menuKey]
+    );
+  };
+
+  // Hàm kiểm tra xem menu có active không - FIXED VERSION
+  const isMenuActive = (menuLink: string, submenus?: Submenu[]): boolean => {
+    // Kiểm tra chính xác pathname với menuLink
+    if (pathname === menuLink || pathname === `${menuLink}/`) {
+      return true;
+    }
+
+    // Kiểm tra cho trang chủ
+    if (menuLink === "/" && (pathname === "/" || pathname === "")) {
+      return true;
+    }
+
+    // Kiểm tra các submenus
+    if (submenus) {
+      return submenus.some((submenu) => {
+        // Kiểm tra submenu chính
+        if (pathname === submenu.link || pathname === `${submenu.link}/`) {
+          return true;
+        }
+
+        // Kiểm tra nested submenus
+        if (submenu.submenus) {
+          return submenu.submenus.some(
+            (nested) =>
+              pathname === nested.link || pathname === `${nested.link}/`
+          );
+        }
+
+        return false;
+      });
+    }
+
+    return false;
+  };
+
+  // Hàm kiểm tra link có phải là external không
+  const isExternalLink = (link: string): boolean => {
+    return (
+      link.startsWith("http://") ||
+      link.startsWith("https://") ||
+      link.startsWith("//")
+    );
+  };
+
+  // Render submenus
+  const renderSubmenu = (
+    submenus: Submenu[] = [],
+    parentId: number,
+    level: number = 0
+  ) => {
+    if (!submenus || submenus.length === 0) return null;
+
     return submenus.map((submenu, i) => {
-      if (submenu.submenus) {
-        return (
-          <li key={i} className="menu-item-has-children">
-            <Link href={submenu.link || "#"}>{submenu.title}</Link>
-            <ul className="tp-submenu submenu">
-              {renderSubmenu(submenu.submenus)}
-            </ul>
-          </li>
-        );
-      }
+      const hasChildren = submenu.submenus && submenu.submenus.length > 0;
+      const menuKey = `${parentId}-${i}-${level}`;
+      const isExpanded = expandedSubMenus.includes(menuKey);
+      const isActive =
+        pathname === submenu.link || pathname === `${submenu.link}/`;
+
+      // Kiểm tra nếu link là external
+      const isExternal = isExternalLink(submenu.link || "");
 
       return (
-        <li key={i}>
-          <Link href={submenu.link || "#"}>{submenu.title}</Link>
+        <li
+          key={`${parentId}-${i}`}
+          className={`${hasChildren ? "menu-item-has-children" : ""} ${
+            isActive ? "active" : ""
+          }`}
+        >
+          {isExternal ? (
+            <a
+              href={submenu.link || "#"}
+              className={isActive ? "active" : ""}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                if (hasChildren && submenu.link === "#") {
+                  e.preventDefault();
+                  toggleSubMenu(menuKey);
+                }
+              }}
+            >
+              {submenu.title}
+              {hasChildren && (
+                <button
+                  className="dropdown-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSubMenu(menuKey);
+                  }}
+                  aria-label={isExpanded ? "Thu gọn" : "Mở rộng"}
+                ></button>
+              )}
+            </a>
+          ) : (
+            <Link
+              href={submenu.link || "#"}
+              className={isActive ? "active" : ""}
+              onClick={(e) => {
+                if (hasChildren && submenu.link === "#") {
+                  e.preventDefault();
+                  toggleSubMenu(menuKey);
+                }
+              }}
+            >
+              {submenu.title}
+              {hasChildren && (
+                <button
+                  className="dropdown-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSubMenu(menuKey);
+                  }}
+                  aria-label={isExpanded ? "Thu gọn" : "Mở rộng"}
+                ></button>
+              )}
+            </Link>
+          )}
+
+          {hasChildren && isExpanded && (
+            <ul className={`tp-submenu submenu level-${level + 1}`}>
+              {renderSubmenu(submenu.submenus, parentId, level + 1)}
+            </ul>
+          )}
         </li>
       );
     });
   };
 
-  // Returns CSS class based on tag like 'Popular', 'Trending', or 'Hot'
-  const getTagClass = (tag: string) => {
-    switch (tag) {
-      case "Popular":
-        return "pop";
-      case "Trending":
-        return "new";
-      case "Hot":
-        return "hot";
-      default:
-        return "";
-    }
-  };
-
   return (
-    <ul>
-      {headerMenuData.map((menu) => (
-        <li
-          key={menu.id}
-          className={`has-dropdown ${
-            menu.megaMenu || menu.smallMenu || menu.mediumMenu ? "p-static" : ""
-          } ${hoveredMenu === menu.id ? "active" : ""}`}
-          onMouseEnter={() => setHoveredMenu(menu.id)}
-          onMouseLeave={() => setHoveredMenu(null)}
-        >
-          <Link href={menu.link}>
-            {menu.title}
-            {menu.pluseIncon && <span className="dropdown-btn"></span>}
-          </Link>
+    <ul className="main-menu">
+      {headerMenuData.map((menu: MenuItem) => {
+        const hasSubmenu =
+          menu.hasDropdown && menu.submenus && menu.submenus.length > 0;
+        const isActive = isMenuActive(menu.link, menu.submenus);
+        const isExpanded = expandedMainMenus.includes(menu.id);
 
-          {menu.megaMenu || menu.smallMenu || menu.mediumMenu ? (
-            <div
-              className={`tp-megamenu-wrapper ${
-                menu.smallMenu ? "megamenu-small" : ""
-              } mega-menu megamenu-white-bg`}
-            >
-              <div className="row gx-0">
-                {menu.megaMenu &&
-                  menu?.submenus?.map((submenu: Submenu, i: number) => (
-                    <div key={i} className="col-xl-3">
-                      <div className="tp-megamenu-list">
-                        {submenu.title && (
-                          <h4 className="tp-megamenu-title">{submenu.title}</h4>
-                        )}
-                        {submenu.megaMenu && (
-                          <ul>
-                            {submenu.megaMenu.map((item, j) => (
-                              <li key={j}>
-                                <ThemeLink href={item.link}>
-                                  {item.title}
-                                  {item.tag && (
-                                    <span className={getTagClass(item.tag)}>
-                                      {item.tag}
-                                    </span>
-                                  )}
-                                </ThemeLink>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+        // Kiểm tra nếu link là external
+        const isExternal = isExternalLink(menu.link);
 
-                {menu.smallMenu &&
-                  menu?.submenus?.map((submenu: Submenu, i: number) => (
-                    <div key={i} className="col-xl-4">
-                      <div className="tp-megamenu-list">
-                        {submenu.title && (
-                          <h4 className="tp-megamenu-title">{submenu.title}</h4>
-                        )}
-                        {submenu.megaMenu && (
-                          <ul>
-                            {submenu.megaMenu.map((item, j) => (
-                              <li key={j}>
-                                <ThemeLink href={item.link}>
-                                  {item.title}
-                                  {item.tag && (
-                                    <span className={getTagClass(item.tag)}>
-                                      {item.tag}
-                                    </span>
-                                  )}
-                                </ThemeLink>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-
-                {menu.mediumMenu && (
-                  <div className="col-xl-10">
-                    <div className="row gx-0">
-                      {menu?.submenus?.map((submenu: Submenu, i: number) => (
-                        <div key={i} className="col-xl-3">
-                          <div className="tp-megamenu-list">
-                            {submenu.title && (
-                              <h4 className="tp-megamenu-title">
-                                {submenu.title}
-                              </h4>
-                            )}
-
-                            {submenu.megaMenu && (
-                              <ul>
-                                {submenu.megaMenu.map((item, j) => (
-                                  <li key={j}>
-                                    <ThemeLink href={item.link}>
-                                      {item.title}
-                                      {item.tag && (
-                                        <span className={getTagClass(item.tag)}>
-                                          {item.tag}
-                                        </span>
-                                      )}
-                                    </ThemeLink>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* extra thumb render */}
-                      {menu.menuThumb?.isThumb && (
-                        <div className="col-xl-2">
-                          <div className="tp-megamenu-list">
-                            <div className="tp-megamenu-thumb">
-                              <Image
-                                src={menu.menuThumb.thumbSrc}
-                                alt={menu.menuThumb.thumbAlt || ""}
-                                width={300}
-                                height={300}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+        return (
+          <li
+            key={menu.id}
+            className={`${hasSubmenu ? "has-dropdown" : ""} ${
+              isActive ? "active" : ""
+            }`}
+            onMouseEnter={() => hasSubmenu && setHoveredMenu(menu.id)}
+            onMouseLeave={() => setHoveredMenu(null)}
+          >
+            {isExternal ? (
+              // External link - mở tab mới
+              <a
+                href={menu.link}
+                className={isActive ? "active" : ""}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => {
+                  // Đóng tất cả dropdown khi click vào menu chính
+                  if (!hasSubmenu) {
+                    setExpandedMainMenus([]);
+                    setExpandedSubMenus([]);
+                  }
+                }}
+              >
+                {menu.title}
+                {hasSubmenu && (
+                  <button
+                    className="dropdown-btn"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleMainMenu(menu.id);
+                    }}
+                    aria-label={isExpanded ? "Thu gọn" : "Mở rộng"}
+                    aria-expanded={isExpanded}
+                  ></button>
                 )}
-              </div>
-            </div>
-          ) : menu.submenus ? (
-            <ul className="tp-submenu submenu">
-              {renderSubmenu(menu.submenus)}
-            </ul>
-          ) : null}
-        </li>
-      ))}
+              </a>
+            ) : (
+              // Internal link - dùng Link của Next.js
+              <Link
+                href={menu.link}
+                className={isActive ? "active" : ""}
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => {
+                  // Đóng tất cả dropdown khi click vào menu chính
+                  if (!hasSubmenu) {
+                    setExpandedMainMenus([]);
+                    setExpandedSubMenus([]);
+                  }
+                }}
+              >
+                {menu.title}
+                {hasSubmenu && (
+                  <button
+                    className="dropdown-btn"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleMainMenu(menu.id);
+                    }}
+                    aria-label={isExpanded ? "Thu gọn" : "Mở rộng"}
+                    aria-expanded={isExpanded}
+                  ></button>
+                )}
+              </Link>
+            )}
+
+            {hasSubmenu && (isExpanded || hoveredMenu === menu.id) && (
+              <ul className="tp-submenu submenu">
+                {renderSubmenu(menu.submenus, menu.id)}
+              </ul>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }
