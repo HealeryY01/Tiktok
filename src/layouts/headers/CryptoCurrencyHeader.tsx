@@ -44,7 +44,7 @@ const CryptoCurrencyHeader = () => {
                 </div>
               </div>
               <div className="col-xl-10 col-lg-7 col-7">
-                <div className="tp-header-box d-flex align-items-center justify-content-end justify-content-xl-around">
+                <div className="tp-header-box d-flex align-items-center justify-content-end justify-content-xl-between">
                   <div className="tp-header-menu tp-header-13-menu tp-header-dropdown dropdown-white-bg  d-none d-xl-flex">
                     <nav className="tp-mobile-menu-active">
                       <NavMenus />
