@@ -95,18 +95,17 @@ const CryptoCurrencyFeature = () => {
                 className="tp-section-subtitle-gradient ct mb-20 tp_fade_anim"
                 data-delay=".3"
               >
-                Features
+                Khám phá các tính năng nổi bật
               </div>
               <h4 className="tp-section-title-onest tp-text-revel-anim">
-                Supported tokens
+                Tại sao bạn nên dùng TikCRM?
               </h4>
               <div className="tp_text_anim">
                 <p>
-                  Agntix offers a comprehensive selection of digital assets{" "}
+                  Là một phần của hệ sinh thái KikiSoftware, TikCRM cung cấp
                   <br />
-                  that meet our rigorous criteria for quality, safety, and
-                  regulatory <br />
-                  compliance
+                  trải nghiệm toàn diện, hoàn toàn có thể thích ứng với các mô
+                  hình kinh doanh từ cá nhân đến doanh nghiệp lớn
                 </p>
               </div>
               <div
@@ -116,7 +115,7 @@ const CryptoCurrencyFeature = () => {
                 data-ease="bounce"
               >
                 <Link href="/service-3-light" className="tp-btn-white-border">
-                  Find out more{" "}
+                  Tìm hiểu thêm{" "}
                   <span>
                     <ArrowEleven />
                   </span>

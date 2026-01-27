@@ -17,18 +17,17 @@ const CryptoCurrencyFeatureTwo = () => {
                     className="tp-section-subtitle-gradient ct mb-20 tp_fade_anim"
                     data-delay=".3"
                   >
-                    Features
+                    Khám phá các tính năng nổi bật
                   </div>
                   <h4 className="tp-section-title-onest tp-text-revel-anim">
-                    Robust & secure <br />
-                    exchange platform
+                    Auto Listing
                   </h4>
                   <div className="tp_text_anim">
                     <p>
-                      Whether you’re looking to trade major coins like <br />
-                      Bitcoin and Ethereum or interested in emerging altcoins,{" "}
+                      Tự động đăng sản phẩm lên hàng nghìn shop <br />
+                      chỉ bằng một click. Nguồn sản phẩm có thể lấy từ TikCrawl,{" "}
                       <br />
-                      our platform provides all the tools you need.
+                      đăng tay hay upload CSV
                     </p>
                   </div>
                   <div
@@ -41,7 +40,7 @@ const CryptoCurrencyFeatureTwo = () => {
                       href="/service-3-light"
                       className="tp-btn-white-border tp-btn-light-bg"
                     >
-                      Find out more{" "}
+                      Tìm hiểu thêm{" "}
                       <span>
                         <ArrowEleven />
                       </span>

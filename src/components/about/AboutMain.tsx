@@ -34,10 +34,11 @@ const AboutMain = () => {
           <div className="col-lg-9">
             <div className="pp-about-heading pb-55">
               <h3 className="tp-section-title-teko fs-80 tp_fade_anim">
-                I&lsquo;m a <span>selectively skilled</span> product <br />
-                designer with strong focus on producing <br />
-                high quality and impactful digital <br />
-                experience.
+                Chúng tôi là những
+                <span> nhà phát triển phần mềm</span> đầy nhiệt huyết <br /> ứng
+                dụng công nghệ để nâng tầm thương mại điện tử Việt Nam,
+                <br /> luôn mang đến giải pháp đột phá cho mọi thử thách và
+                trang bị cho bạn những <br /> công cụ mạnh mẽ nhất
               </h3>
             </div>
             <div className="pp-about-wrap">
@@ -56,10 +57,11 @@ const AboutMain = () => {
               </div>
               <div className="pp-about-content tp_text_anim">
                 <p>
-                  I&apos;m a French digital designer and web developer <br />
-                  with over 10 years of experience. At the crossroads <br />
-                  of design, motion and web development, <br />
-                  the diversity of my skills
+                  Sứ mệnh của chúng tôi là đối mặt với những thách thức này{" "}
+                  <br />
+                  bằng cách phát triển các công cụ mạnh mẽ
+                  <br />
+                  nâng tầm hiệu quả cho TikTok Shop và thương mại điện tử.
                 </p>
                 <div className="pp-about-btn">
                   <div
@@ -86,7 +88,7 @@ const AboutMain = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Download CV{" "}
+                      Download CV của chúng tôi{" "}
                     </Link>
                     <Link
                       className="tp-btn-red-circle-text"

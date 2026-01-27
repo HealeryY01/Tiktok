@@ -57,8 +57,8 @@ const CryptoCurrencyMain = () => {
             <CryptoCurrencyFeature />
             <CryptoCurrencyFeatureTwo />
             <CryptoCurrencyService />
-            <CryptoCurrencyTestimonial />
-            <CryptoCurrencyBlog />
+            {/* <CryptoCurrencyTestimonial /> */}
+            {/* <CryptoCurrencyBlog /> */}
           </main>
           <CryptoCurrencyFooter />
         </div>

@@ -36,7 +36,7 @@ const CryptoCurrencyFooter = () => {
                     <div className="cr-footer-widget-social mb-35">
                       <FooterSocialIcons className="tp-footer-widget-social" />
                     </div>
-                    <div className="app-footer-rating">
+                    {/* <div className="app-footer-rating">
                       <div className="app-hero-bottom-rating">
                         <div className="app-hero-bottom-rating-point">
                           <span>4.8</span>
@@ -85,7 +85,7 @@ const CryptoCurrencyFooter = () => {
                           </Link>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div

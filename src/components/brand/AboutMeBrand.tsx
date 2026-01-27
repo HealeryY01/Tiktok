@@ -1,5 +1,7 @@
-import handLeft from "../../../public/assets/img/about-me/about-me-hand-left.png";
-import handRight from "../../../public/assets/img/about-me/about-me-hand-right.png";
+// import handLeft from "../../../public/assets/img/about-me/about-me-hand-left.png";
+// import handRight from "../../../public/assets/img/about-me/about-me-hand-right.png";
+import handLeft from "../../../public/assets/img/about-me/ab1.png";
+import handRight from "../../../public/assets/img/about-me/ab1.png";
 import { brandMarqueeSwiperParams } from "@/constants/swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { BrandStarIcon } from "@/svg/StarIcons";

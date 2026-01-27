@@ -1,185 +1,118 @@
 import mobileMenuData from "@/data/header-menu/mobileMenuData";
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 const MainMobileMenu = () => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
-  const [activeSubmenu, setActiveSubmenu] = useState<number | null>(null);
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
 
   const toggleMenu = (id: number) => {
-    if (activeMenu === id) {
-      setActiveMenu(null);
-    } else {
-      setActiveMenu(id);
-      setActiveSubmenu(null);
-    }
+    setActiveMenu((prev) => (prev === id ? null : id));
+    setActiveSubmenu(null);
   };
 
-  const toggleSubmenu = (index: number) => {
-    if (activeSubmenu === index) {
-      setActiveSubmenu(null);
-    } else {
-      setActiveSubmenu(index);
-    }
+  const toggleSubmenu = (key: string) => {
+    setActiveSubmenu((prev) => (prev === key ? null : key));
   };
 
-  // Returns CSS class based on tag like 'Popular', 'Trending', or 'Hot'
-  const getTagClass = (tag: string) => {
-    switch (tag) {
-      case "Popular":
-        return "pop";
-      case "Trending":
-        return "new";
-      case "Hot":
-        return "hot";
-      default:
-        return "";
-    }
+  // Render submenu đệ quy (multi-level)
+  const renderSubmenus = (submenus: any[], parentKey: string) => {
+    return (
+      <ul className="tp-submenu submenu">
+        {submenus.map((item, index) => {
+          const currentKey = `${parentKey}-${index}`;
+          const hasChild = item.submenus && item.submenus.length > 0;
+
+          return (
+            <li
+              key={currentKey}
+              className={hasChild ? "menu-item-has-children" : ""}
+            >
+              <Link
+                href={item.link}
+                onClick={(e) => {
+                  if (hasChild) {
+                    e.preventDefault();
+                    toggleSubmenu(currentKey);
+                  }
+                }}
+              >
+                {item.title}
+              </Link>
+
+              {/* submenu cấp sâu */}
+              {hasChild && (
+                <>
+                  <ul
+                    className="tp-submenu submenu"
+                    style={{
+                      display: activeSubmenu === currentKey ? "block" : "none",
+                    }}
+                  >
+                    {renderSubmenus(item.submenus, currentKey)}
+                  </ul>
+
+                  <button
+                    className={`tp-menu-close ${
+                      activeSubmenu === currentKey ? "active" : ""
+                    }`}
+                    onClick={() => toggleSubmenu(currentKey)}
+                  >
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
+                </>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    );
   };
 
   return (
-    <>
-      <ul>
-        {mobileMenuData.map((menuItem) => (
-          <li
-            key={menuItem.id}
-            className={`has-dropdown ${
-              activeMenu === menuItem.id ? "active" : ""
-            }`}
-          >
+    <ul className="mobile-menu">
+      {mobileMenuData.map((menuItem) => {
+        const hasDropdown = menuItem.submenus && menuItem.submenus.length > 0;
+
+        return (
+          <li key={menuItem.id} className={hasDropdown ? "has-dropdown" : ""}>
             <Link
               href={menuItem.link}
               onClick={(e) => {
-                e.preventDefault();
-                toggleMenu(menuItem.id);
+                if (hasDropdown) {
+                  e.preventDefault();
+                  toggleMenu(menuItem.id);
+                }
               }}
             >
               {menuItem.title}
             </Link>
 
-            {menuItem.megaMenu ? (
-              <div
-                className="tp-megamenu-wrapper mega-menu megamenu-white-bg"
-                style={{
-                  display: `${activeMenu === menuItem.id ? "block" : "none"}`,
-                }}
-              >
-                <div className="row gx-0">
-                  {menuItem.columns?.map((column, colIndex) => (
-                    <div
-                      key={colIndex}
-                      className={menuItem.image ? "col-xl-2" : "col-xl-3"}
-                    >
-                      <div className="tp-megamenu-list">
-                        <h4 className="tp-megamenu-title">{column.title}</h4>
-                        <ul>
-                          {column.links.map((link, linkIndex) => (
-                            <li key={linkIndex}>
-                              <Link href={link.link}>
-                                {link.title}
-                                {link.badge && (
-                                  <span className={getTagClass(link.badge)}>
-                                    {link.badge}
-                                  </span>
-                                )}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  ))}
-
-                  {menuItem.image && (
-                    <div className="col-xl-2">
-                      <div className="tp-megamenu-list">
-                        <div className="tp-megamenu-thumb">
-                          <Image
-                            src={menuItem.image.src}
-                            alt={menuItem.image.alt}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
+            {/* level 1 submenu */}
+            {hasDropdown && (
+              <>
+                <div
+                  style={{
+                    display: activeMenu === menuItem.id ? "block" : "none",
+                  }}
+                >
+                  {renderSubmenus(menuItem.submenus!, `menu-${menuItem.id}`)}
                 </div>
-              </div>
-            ) : (
-              <ul
-                className="tp-submenu submenu"
-                style={{
-                  display: `${activeMenu === menuItem.id ? "block" : "none"}`,
-                }}
-              >
-                {menuItem.submenu?.map((subItem, subIndex) => (
-                  <li
-                    key={subIndex}
-                    className={
-                      subItem.submenu
-                        ? `menu-item-has-children ${
-                            activeSubmenu === subIndex ? "active" : ""
-                          }`
-                        : ""
-                    }
-                  >
-                    <Link
-                      href={subItem.link}
-                      onClick={(e) => {
-                        if (subItem.submenu) {
-                          e.preventDefault();
-                          toggleSubmenu(subIndex);
-                        }
-                      }}
-                    >
-                      {subItem.title}
-                    </Link>
 
-                    {subItem.submenu && (
-                      <>
-                        <ul
-                          className="tp-submenu submenu"
-                          style={{
-                            display: `${
-                              activeSubmenu === subIndex ? "block" : "none"
-                            }`,
-                          }}
-                        >
-                          {subItem.submenu.map((nestedItem, nestedIndex) => (
-                            <li key={nestedIndex}>
-                              <Link href={nestedItem.link}>
-                                {nestedItem.title}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                        <button
-                          className={`tp-menu-close ${
-                            activeSubmenu === subIndex ? "active" : ""
-                          }`}
-                          onClick={() => toggleSubmenu(subIndex)}
-                        >
-                          <i className="fa-solid fa-plus"></i>
-                        </button>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                <button
+                  className={`tp-menu-close ${
+                    activeMenu === menuItem.id ? "active" : ""
+                  }`}
+                  onClick={() => toggleMenu(menuItem.id)}
+                >
+                  <i className="fa-solid fa-plus"></i>
+                </button>
+              </>
             )}
-
-            <button
-              className={`tp-menu-close ${
-                activeMenu === menuItem.id ? "active" : ""
-              }`}
-              onClick={() => toggleMenu(menuItem.id)}
-            >
-              <i className="fa-solid fa-plus"></i>
-            </button>
           </li>
-        ))}
-      </ul>
-    </>
+        );
+      })}
+    </ul>
   );
 };
 
